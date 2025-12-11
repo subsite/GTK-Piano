@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 
-import sys, gi
+import os, sys, gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GLib
 import fluidsynth
+
+base_path = os.path.dirname(os.path.abspath(__file__))
 
 # ----- Fluidsynth setup -----
 fs = fluidsynth.Synth(samplerate=44100)
 fs.start(driver="alsa")  # or "pulseaudio" if needed
 
-sfid = fs.sfload("./Stein_Grand_Piano.sf2")
+sfid = fs.sfload(os.path.join(base_path, "./Stein_Grand_Piano.sf2"))
 fs.program_select(0, sfid, 0, 0)  # channel 0, bank 0, program 0
 
 fs.cc(0, 7, 0)
@@ -44,7 +46,7 @@ class PianoWindow(Gtk.Window):
         super().__init__(title="GTK Piano")
         self.set_border_width(8)
         self.set_resizable(False)
-        self.set_default_icon_from_file("./piano.png")
+        self.set_default_icon_from_file(os.path.join(base_path, "./piano.png"))
 
         keyboard = Gtk.Fixed()
         self.add(keyboard)
