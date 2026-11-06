@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.subsite.GTKPiano</id>
+  <name>GTK Piano</name>
+  <summary>Simple on-screen piano</summary>
+  <metadata_license>MIT</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+
+  <description>
+    <p>
+      A four-octave piano keyboard you play with the mouse. Sound is
+      rendered by FluidSynth using a bundled Stein grand piano soundfont.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">io.github.subsite.GTKPiano.desktop</launchable>
+
+  <url type="homepage">https://github.com/subsite/GTK-Piano</url>
+  <url type="bugtracker">https://github.com/subsite/GTK-Piano/issues</url>
+
+  <developer_name>Fredrik Welander</developer_name>
+
+  <provides>
+    <binary>gtk-piano</binary>
+  </provides>
+
+  <releases>
+    <release version="1.0.0" date="2026-11-06">
+      <description>
+        <p>Initial Flatpak release.</p>
+      </description>
+    </release>
+  </releases>
+
+  <content_rating type="oars-1.1"/>
+</component>

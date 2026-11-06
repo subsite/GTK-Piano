@@ -1,0 +1,71 @@
+app-id: io.github.subsite.GTKPiano
+runtime: org.gnome.Platform
+runtime-version: '49'
+sdk: org.gnome.Sdk
+command: gtk-piano
+
+finish-args:
+  # Display
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=ipc
+  # Audio output
+  - --socket=pulseaudio
+
+modules:
+
+  # ── FluidSynth ────────────────────────────────────────────────────
+  # Not part of the GNOME runtime. Only the shared library is kept.
+  - name: fluidsynth
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DCMAKE_INSTALL_LIBDIR=lib
+      - -Denable-jack=OFF
+      - -Denable-oss=OFF
+      - -Denable-sdl3=OFF
+      - -Denable-readline=OFF
+      - -Denable-systemd=OFF
+    cleanup:
+      - /bin
+      - /include
+      - /lib/cmake
+      - /lib/pkgconfig
+      - /share/man
+    sources:
+      # git source so the gcem/signalsmith submodules are included
+      - type: git
+        url: https://github.com/FluidSynth/fluidsynth.git
+        tag: v2.6.2
+        commit: c3b244ddfd094489a5490beee013c621a504adf2
+
+  # ── pyfluidsynth ──────────────────────────────────────────────────
+  - name: pyfluidsynth
+    buildsystem: simple
+    build-commands:
+      - pip3 install --no-deps --no-index --no-build-isolation --prefix=/app pyfluidsynth-1.4.0-py3-none-any.whl
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/py3/p/pyfluidsynth/pyfluidsynth-1.4.0-py3-none-any.whl
+        sha256: 93f0a0e8d5b34f974010473f9985fc52e1379e8f316892afeb2de1d759439ca3
+
+  # ── GTK Piano ─────────────────────────────────────────────────────
+  - name: gtk-piano
+    buildsystem: simple
+    build-commands:
+      # App source and assets
+      - install -Dm755 piano.py                /app/share/gtk-piano/piano.py
+      - install -Dm644 piano.png               /app/share/gtk-piano/piano.png
+      - install -Dm644 Stein_Grand_Piano.sf2   /app/share/gtk-piano/Stein_Grand_Piano.sf2
+      # Launcher wrapper
+      - install -Dm755 flatpak/gtk-piano.sh    /app/bin/gtk-piano
+      # Desktop integration
+      - install -Dm644 flatpak/io.github.subsite.GTKPiano.desktop
+          /app/share/applications/io.github.subsite.GTKPiano.desktop
+      - install -Dm644 flatpak/io.github.subsite.GTKPiano.metainfo.xml
+          /app/share/metainfo/io.github.subsite.GTKPiano.metainfo.xml
+      - install -Dm644 piano.png
+          /app/share/icons/hicolor/256x256/apps/io.github.subsite.GTKPiano.png
+    sources:
+      - type: dir
+        path: ..

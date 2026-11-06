@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  flatpak:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-49
+      options: --privileged
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure metainfo has a release entry for this version
+        run: |
+          python3 - <<'EOF'
+          import os
+          from datetime import date
+          version = os.environ['GITHUB_REF_NAME'].lstrip('v')
+          today = date.today().isoformat()
+          path = 'flatpak/io.github.subsite.GTKPiano.metainfo.xml'
+          content = open(path).read()
+          if f'version="{version}"' not in content:
+              entry = f'\n    <release version="{version}" date="{today}"/>'
+              content = content.replace('<releases>', '<releases>' + entry, 1)
+              open(path, 'w').write(content)
+          EOF
+
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: gtk-piano.flatpak
+          manifest-path: flatpak/io.github.subsite.GTKPiano.yml
+          cache-key: flatpak-builder-${{ github.sha }}
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: GTK Piano ${{ github.ref_name }}
+          files: gtk-piano.flatpak
+          generate_release_notes: true

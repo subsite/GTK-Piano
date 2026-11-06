@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=GTK Piano
+Comment=Simple on-screen piano
+Exec=gtk-piano
+Icon=io.github.subsite.GTKPiano
+Terminal=false
+Type=Application
+Categories=Audio;AudioVideo;Music;
+Keywords=piano;keyboard;music;midi;

@@ -9,7 +9,7 @@ base_path = os.path.dirname(os.path.abspath(__file__))
 
 # ----- Fluidsynth setup -----
 fs = fluidsynth.Synth(samplerate=44100)
-fs.start(driver="alsa")  # or "pulseaudio" if needed
+fs.start(driver=os.environ.get("PIANO_AUDIO_DRIVER", "alsa"))  # e.g. "pulseaudio", "pipewire"
 
 sfid = fs.sfload(os.path.join(base_path, "./Stein_Grand_Piano.sf2"))
 fs.program_select(0, sfid, 0, 0)  # channel 0, bank 0, program 0
@@ -30,8 +30,8 @@ def note_off(midi):
 
 # ----- Piano UI -----
 BLACKS = {1, 3, 6, 8, 10}
-MIDI_START = 36         # C4
-NUM_NOTES = 49          # 3 octaves
+MIDI_START = 36         # C2
+NUM_NOTES = 49          # 4 octaves + top C
 
 KEY_WIDTH = 44
 WHITE_HEIGHT = 220
