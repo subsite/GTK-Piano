@@ -26,6 +26,9 @@ modules:
       - -Denable-sdl3=OFF
       - -Denable-readline=OFF
       - -Denable-systemd=OFF
+      # Fetches extra sources at build time (no network in the sandbox);
+      # only adds an optional reverb engine/limiter, default reverb stays
+      - -Denable-signalsmith=OFF
     cleanup:
       - /bin
       - /include
@@ -33,7 +36,7 @@ modules:
       - /lib/pkgconfig
       - /share/man
     sources:
-      # git source so the gcem/signalsmith submodules are included
+      # git source so the gcem submodule is included
       - type: git
         url: https://github.com/FluidSynth/fluidsynth.git
         tag: v2.6.2
