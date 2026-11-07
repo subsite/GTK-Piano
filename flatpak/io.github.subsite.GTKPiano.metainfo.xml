@@ -25,6 +25,7 @@
   </provides>
 
   <releases>
+    <release version="1.0.1" date="2026-11-07"/>
     <release version="1.0.0" date="2026-11-06">
       <description>
         <p>Initial Flatpak release.</p>
